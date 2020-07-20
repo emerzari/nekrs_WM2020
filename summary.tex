@@ -163,13 +163,18 @@ The axial length was simply extended while keeping the mesh resolution the same.
 A fixed number of 69250 spectral elements per node is used, which corresponds 
 to 3.9 million grid points per GPU and 0.5 million grid points per MPI rank for CPU-only runs.
 The averaged walltime per timestep takes 0.4--0.5 seconds for NekRS on GPUs,
-more than 10X speedup compared to those of Nek5000/NekRS runs on CPUs.
+achieving $\sim$10$\times$ speedup compared to NekRS on CPUs and 
+$\sim$7$\times$ speedup compared to Nek5000 on CPUs. 
+We note that the pressure-Poisson solve for Nek5000 CPU runs was performed with the temporal 
+projection techniques in~\cite{Fischer1998}.
 
 \medskip
 Figure~\ref{fig:nekrs2} shows strong scaling performance of Nek5000 and NekRS with $E = 277000$ 
 and $N = 7$, total grid points of $n = 95,011,000$. NekRS GPU runs used 
 4M, 3M, 2.5M, 2.2M, 1.9M, 1.7M and 1.5M grid points per GPU as the number of nodes increase 
 from 4 to 10, demonstrating 80\% efficiency at 1.9M points per GPU.
+Here the pressure-Poisson solve for Nek5000 CPU runs was not performed with the temporal projection 
+techniques in~\cite{Fischer1998}.
 
 \medskip
 We note that a full core calculation was also performed with 150 million elements and the average 
