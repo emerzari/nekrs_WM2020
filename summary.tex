@@ -1,7 +1,7 @@
 \documentclass{anstrans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{NekRS: Massively parallel fluid flow simulations in reactor cores}
-\author{Paul Fischer,$^{*}$ Stefan Kerkemeier,$^{\dagger}$ Yu-Hsiang Lan,$^{\dagger}$ Misun Min, $^{\dagger}$ and Elia Merzari $^{\ddagger}$}
+\author{Paul Fischer,$^{*}$ Stefan Kerkemeier,$^{\dagger}$ Yu-Hsiang Lan,$^{\dagger}$ Misun Min,$^{\dagger}$ and Elia Merzari$^{\ddagger}$}
 
 \institute{
 $^{*}$ University of Illinois at Urbana-Champaign, fischerp@illinois.edu
@@ -36,6 +36,7 @@ Reynolds Averaged Navier-Stokes (RANS) and occasionally Unsteady Reynolds Averag
 
 Thanks to the the advent of Petascale computing (i.e, computers capable of more than 1 Petaflop), the simulation of portions of nuclear components has been demonstrated with LES \cite{merzari2020}. For example, the simulation of large portions of fuel assemblies has been demonstrated:  these simulations can provide invaluable insight into the flow dynamics, which is difficult or often impossible to obtain with experiments alone. Moreover, they allow investigation of global effects that otherwise are impossible to elucidate with smaller portions of the system. NEAMS has put considerable resources into scalable high-order CFD software that can leverage large scale supercomputers to deliver simulations of unprecedented detail and scale.
 
+\medskip
 Even with Petascale computing, limitations in nuclear modeling and simulation tools remain. Resolution requirements limit our capacity to reach higher Reynolds numbers, for instance. Time-scale separation also limits severely our capacity to simulate transient behavior. Nonetheless, the continued increase in computational resources is enabling a further expansion of what can be simulated. The main driver of the transition to Exascale (i.e, computers capable of more than 1 Exaflop) will inevitably be weak scaling \cite{merzari2017large}. Simulations of significant portions of a reactor core with LES are now on the horizon at moderate Reynolds numbers (up to $Re=50,000$).
 
 In order to exploit the power of Exascale and pre-Exascale architectures in the
@@ -93,8 +94,7 @@ solve) the PDE operators.  The main kernels require fast evaluation of the
 Laplacian (for the viscous Helmholtz solves for each velocity component and
 for the pressure-Poisson solve), fast preconditioners (for pressure), and
 fast, fully dealiased, advection operators.  The coarse-grid pressure solves
-are performed either with parAlmond from the libParanumal library or with
-Hypre.
+are performed with Hypre.
 
 
 \section{Selected results}
@@ -105,64 +105,68 @@ them ideally suited for LES/DNS in complex domains.  Here, we present performanc
 results related to the flow in light-water small modular reactors and
 in pebble beds.
 
-\subsection{Flow in a 17x17 assembly and extension to full core}
-
-We discuss here weak-scaling studies performed on Summit for a 17x17 assembly
-and multi-assembly calculations performed with NekRS. Figure~\ref{fig:gpu2}
-shows results for a 17x17 rod bundle LES calculation; this simulation (selected
-results are presented in \cite{merzari2020}) has been scaled up to 75 billion
-grid-points for moderate Reynolds numbers and full core conditions.
-
-We analyze in more detail here the performance of NekRS vs. Nek5000 for fuel
-assemblies. Figure~\ref{fig:nekrs1}, left, shows strong scaling results on a
-few nodes of Summit using NekRS with six V100 GPUs per node or NekRS/Nek5000
-with 42 CPUs per node for the 17x17 case. For the CPU version, NekRS uses Hypre
-as a coarse grid solver. In this case, NekRS is about 4X slower than Nek5000
-because the pressure solver is not yet as optimized as the highly-tuned solver
-in Nek5000. For the GPU, the NekRS results improve substantially when the
-coarse grid solver is based on the AMG solver ParAlmond.
-Figure~\ref{fig:nekrs1} , center, shows the pressure iteration counts for each
-of the four cases. Nek5000 uses Schwarz-smoothed p-multigrid; NekRS uses
-Chebyshev smoothing. When ParAlmond is used for the coarse-grid solve the NekRS
-iteration counts improve by a factor of two and are on par with those of
-Nek5000. The Chebyshev smoother requires more work per iteration than the
-Schwarz-based smoother. With ongoing effort on the pressure solve we anticipate
-a 2X reduction in NekRS solution times, which will put it on par with the
-strong-scaled solution times of Nek5000 with more than 2X energy savings that
-are already observed for NekRS on Summit's V100s (Figure~\ref{fig:nekrs1} ,
-right).
-
-Table~\ref{wscaling2} shows results for the weak scaling performance on Summit for NekRS for 17x17 assembly calculations (8,000 elements per GPU, $N=7$), with increasing mesh counts. The axial length was simply extended while keeping the mesh resolution the same. We note that the time per time-step stabilizes quickly indicating a good weak-scaling performance even for this more complex case.
-
-We note that a full core calculation was also performed with 150 million elements and the average time for time step was 0.7s.
-
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.5\textwidth]{./Figures/full_core_summary.png}
-\caption{Numerical simulation of a full core SMR calculation and in a 17x17 assembly. (left) full core. (right) LES simulation in a 17x17 assembly}
+\caption{Numerical simulation of a full core SMR calculation and in a 17$\times$17 assembly.
+  (left) full core. (right) LES simulation in a 17$\times$17 assembly.}
 \label{fig:gpu2}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
-\includegraphics[width=0.5\textwidth]{./Figures/performance_nekrs}
-\caption{ NekRS and Nek5000 performance of GPUs vs. CPUs on Summit for turbulent flow simulations with Re=5000 for a 17x17 rod-bundle geometry using total number of grid points $n=95,011,000$. Based on timings from Step 11 to 60, time-per-step with ideal scalings shown as dashed lines (left), pressure iterations per step (center), and dofs-per-joule with respect to time-per-step (right) are shown.}
+\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_weakscale.png}
+\vskip.2in
+\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_strongscale.png}
+\caption{NekRS GPU/CPU and Nek5000 CPU weak-scaling (top) and strong-scaling (bottom) performance on OLCF's Summit.
+The averaged walltime per timestep is measured using 101--200 time steps for
+a 17$\times$17 rod-bundle turbulent flow simulations with $Re=5000$.}
 \label{fig:nekrs1}
 \end{figure}
 
 
-\begin{table} [!b]
-\resizebox{0.48\textwidth}{!}{
- \begin{tabular}{ccc}
-\# of Nodes on Summit & Elements (Million) & Average time per time-step \\
-\midrule
-6	 & 0.277	& 0.312 s \\
-66  & 3 	  & 0.455 s \\
-264  & 12	  & 0.648 s \\
-660  & 30	  & 0.506 s \\
-\bottomrule \end{tabular} }
-\caption{\label{wscaling2} Weak-scaling on Summit for 17x17 assembly case.}
-\end{table}
+\subsection{Flow in a 17$\times$17 assembly and extension to full core}
+
+We discuss here scaling studies performed on Summit for a 17$\times$17 assembly
+and multi-assembly calculations performed with NekRS. Figure~\ref{fig:gpu2}
+shows results for a 17$\times$17 rod bundle LES calculation; this simulation (selected
+results are presented in \cite{merzari2020}) has been scaled up to 75 billion
+grid-points for moderate Reynolds numbers and full core conditions.
+
+Figure~\ref{fig:nekrs1} shows the recent performance of weak and strong scalings on Summit's GPUs 
+and CPUs for 17$\times$17 rod-bundle turbulent flow simulations for $Re=5000$.
+%We analyze more detail here the performance of NekRS vs. Nek5000 for fuel assemblies. 
+We use six V100 GPUs per node and 42 CPU cores (or 42 MPI ranks) per node.
+For GPU, each MPI process has a one-to-one correspondence with a GPU device. 
+
+Figure~\ref{fig:nekrs1}, top, shows weak scaling of Nek5000 and NekRS with increasing mesh counts,
+varying from $E = 277,000$ to $E = 121,880,000$ (total 41 billions of grid points using $N = 7$) 
+as the number of nodes increases as 16, 48, 88, 176, 352, 440, 880, and 1760. 
+The axial length was simply extended while keeping the mesh resolution the same. 
+A fixed number of 69250 spectral elements per node is used, which corresponds 
+to 3.9 million grid points per GPU and 0.5 million grid points per MPI rank for CPU-only runs.
+The averaged walltime per timestep is measured using 101–200 timesteps. 
+
+Figure~\ref{fig:nekrs1}, bottom, shows strong scaling performance with $E = 277000$ and $N = 7$,
+total grid points of $n = 95,011,000$. NekRS GPU runs used 4M, 3M, 2.5M, 2.2M, 1.9M, 1.7M and 1.5M
+grid points per GPU as the number of nodes increase from 4 to 10, demonstrating 80\% efficiency 
+at 1.9M points per GPU.
+
+We note that a full core calculation was also performed with 150 million elements and the average 
+time for time step was 0.7s.
+
+%\begin{table} [!b]
+%\resizebox{0.48\textwidth}{!}{
+% \begin{tabular}{ccc}
+%\# of Nodes on Summit & Elements (Million) & Average time per time-step \\
+%\midrule
+%6	 & 0.277	& 0.312 s \\
+%66  & 3 	  & 0.455 s \\
+%264  & 12	  & 0.648 s \\
+%660  & 30	  & 0.506 s \\
+%\bottomrule \end{tabular} }
+%\caption{\label{wscaling2} Weak-scaling on Summit for 17$\times$17 assembly case.}
+%\end{table}
 
 
 \subsection{Pebble bed cores}
