@@ -201,16 +201,15 @@ spectral element mesh with 1,121,214 spectral elements for 3260 pebbles. }
 \end{figure}
 
 
- \begin{table}
-\footnotesize
-  \resizebox{0.48\textwidth}{!}{
+ \begin{table} \centering \small
+% \resizebox{0.48\textwidth}{!}{
   \begin{tabular}{ccc} \hline \hline
    \# pebbles & $E$ & $E$/pebble \\ \hline
   146 & 62,132 & 425 \\
   1568 & 524,386 & 334 \\
   3260 & 1,121,214 & 343 \\
   11145 & 3,575,076 & 320 \\ \hline \hline
- \end{tabular}}
+ \end{tabular}%}
 % \begin{tabular}{cccccccc}
 % \hline \hline
 %  \# pebbles & $E$ & $E$/pebble & \# nodes & \# GPUs & $E$/GPU & $n$/GPU & walltime/step (s) \\
@@ -221,8 +220,7 @@ spectral element mesh with 1,121,214 spectral elements for 3260 pebbles. }
 % 11145 & 3,575,076 & 320 & 148 & 888 & 4025 & 2.0M & 0.90 \\
 %  \hline \hline
 %\end{tabular}}
-  \caption{NekRS: All-Hex Meshes for Pebbles, Based on Voronoi Cell strategy, and Simulation Timings (seconds per step) on GPUs
-  of Turbulent Flow Simulations with $Re = 5000$.}
+  \caption{NekRS: All-hex meshes for pebbles based on Voronoi cell strategy.}
   \label{tab:pebble}
  \end{table}
 
