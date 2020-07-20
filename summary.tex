@@ -32,13 +32,16 @@ $^{\ddagger}$ Pennsylvania State University
 
 Computational fluid dynamics has achieved  widespread use both in reactor design and in safety analysis, as testified by the increasing number of articles in the field. Among recent examples, Roelofs \cite{roelofs2018thermal} illustrates the importance of CFD for liquid metal reactor design and analysis. In fact, detailed modeling and simulation is of particular importance for advanced reactors,  where it can be used in conjunction with separate effect experiments, until integral test data is available.
 
+\medskip
 Reynolds Averaged Navier-Stokes (RANS) and occasionally Unsteady Reynolds Averaged Navier Stokes (URANS) remain the workhorse for analysis conducted in industry, research centers, and academia.  However, despite significant advancements in turbulence modeling in recent years, RANS is limited in terms of accuracy.   In contrast to RANS, Wall-resolved Large Eddy simulation (LES) and Direct Numerical Simulation (DNS) provide a much lesser degree of uncertainty, and they can provide valuable and unprecedented insight into the flow physics.
 
+\medskip
 Thanks to the the advent of Petascale computing (i.e, computers capable of more than 1 Petaflop), the simulation of portions of nuclear components has been demonstrated with LES \cite{merzari2020}. For example, the simulation of large portions of fuel assemblies has been demonstrated:  these simulations can provide invaluable insight into the flow dynamics, which is difficult or often impossible to obtain with experiments alone. Moreover, they allow investigation of global effects that otherwise are impossible to elucidate with smaller portions of the system. NEAMS has put considerable resources into scalable high-order CFD software that can leverage large scale supercomputers to deliver simulations of unprecedented detail and scale.
 
 \medskip
 Even with Petascale computing, limitations in nuclear modeling and simulation tools remain. Resolution requirements limit our capacity to reach higher Reynolds numbers, for instance. Time-scale separation also limits severely our capacity to simulate transient behavior. Nonetheless, the continued increase in computational resources is enabling a further expansion of what can be simulated. The main driver of the transition to Exascale (i.e, computers capable of more than 1 Exaflop) will inevitably be weak scaling \cite{merzari2017large}. Simulations of significant portions of a reactor core with LES are now on the horizon at moderate Reynolds numbers (up to $Re=50,000$).
 
+\medskip
 In order to exploit the power of Exascale and pre-Exascale architectures in the
 United States,  however, performant GPU implementations of computational fluid
 dynamics algorithms are needed. In this manuscript we summarize recent efforts
@@ -58,6 +61,7 @@ magnetohydrodynamics. It features state-of-the-art, scalable high-order
 algorithms that are fast and efficient on platforms ranging from laptops to the
 DOE leadership computing facilities.
 
+\medskip
 Nek5000 is based on the spectral element method \cite{patera1984} in which the
 domain is decomposed globally into smaller domains (elements), which are
 assumed to be curvilinear hexahedra (brick meshes) conforming to the domain
@@ -84,6 +88,7 @@ solve is essential above 250,000 elements. Nek5000 employs a pure MPI parallel
 implementation. An extensive discussion of the scalability of Nek5000 is
 provided in \cite{fischer15,fischer20a}.
 
+\medskip
 NekRS is a new GPU-oriented version of Nek5000  that is also capable of running
 on CPUs. It represents a significant redesign of the code. While written in
 C++, NekRS is able to link to Nek5000 to leverage its extensive pre- and
@@ -101,9 +106,12 @@ are performed with Hypre.
 
 The rapid convergence of the high-order discretizations in Nek5000 and NekRS
 and their high performance on the DOE's leadership computing facilities makes
-them ideally suited for LES/DNS in complex domains.  Here, we present performance
-results related to the flow in light-water small modular reactors and
-in pebble beds.
+them ideally suited for LES/DNS in complex domains.  
+In~\cite{fischer15}, the strong scaling behavior of Nek5000 on ALCF's Mira, 
+where 60\% efficiency is realized at 1 million MPI ranks for just 2000 points 
+per rank, in keeping with theoretical estimates provided.  
+Here, we present performance results on OLCF's Summit,
+related to the flow in light-water small modular reactors and in pebble beds.
 
 \begin{figure}[!ht]
 \centering
@@ -116,12 +124,18 @@ in pebble beds.
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_weakscale.png}
-\vskip.2in
-\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_strongscale.png}
-\caption{NekRS GPU/CPU and Nek5000 CPU weak-scaling (top) and strong-scaling (bottom) performance on OLCF's Summit.
+\caption{NekRS GPU/CPU and Nek5000 CPU weak-scaling performance on OLCF's Summit.
 The averaged walltime per timestep is measured using 101--200 time steps for
 a 17$\times$17 rod-bundle turbulent flow simulations with $Re=5000$.}
 \label{fig:nekrs1}
+\end{figure}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_strongscale.png}
+\caption{NekRS GPU/CPU and Nek5000 CPU strong-scaling performance on OLCF's Summit.
+The averaged walltime per timestep is measured using 101--200 time steps for
+a 17$\times$17 rod-bundle turbulent flow simulations with $Re=5000$.}
+\label{fig:nekrs2}
 \end{figure}
 
 
@@ -133,25 +147,31 @@ shows results for a 17$\times$17 rod bundle LES calculation; this simulation (se
 results are presented in \cite{merzari2020}) has been scaled up to 75 billion
 grid-points for moderate Reynolds numbers and full core conditions.
 
-Figure~\ref{fig:nekrs1} shows the recent performance of weak and strong scalings on Summit's GPUs 
+\medskip
+Figures~\ref{fig:nekrs1}--\ref{fig:nekrs2} demonstrate 
+the recent performance of weak and strong scalings on Summit's GPUs 
 and CPUs for 17$\times$17 rod-bundle turbulent flow simulations for $Re=5000$.
-%We analyze more detail here the performance of NekRS vs. Nek5000 for fuel assemblies. 
+The averaged walltime per timestep is measured using 101–200 timesteps. 
 We use six V100 GPUs per node and 42 CPU cores (or 42 MPI ranks) per node.
 For GPU, each MPI process has a one-to-one correspondence with a GPU device. 
 
-Figure~\ref{fig:nekrs1}, top, shows weak scaling of Nek5000 and NekRS with increasing mesh counts,
+\medskip
+Figure~\ref{fig:nekrs1} shows weak scaling of Nek5000 and NekRS with increasing mesh counts,
 varying from $E = 277,000$ to $E = 121,880,000$ (total 41 billions of grid points using $N = 7$) 
 as the number of nodes increases as 16, 48, 88, 176, 352, 440, 880, and 1760. 
 The axial length was simply extended while keeping the mesh resolution the same. 
 A fixed number of 69250 spectral elements per node is used, which corresponds 
 to 3.9 million grid points per GPU and 0.5 million grid points per MPI rank for CPU-only runs.
-The averaged walltime per timestep is measured using 101–200 timesteps. 
+The averaged walltime per timestep takes 0.4--0.5 seconds for NekRS on GPUs,
+more than 10X speedup compared to those of Nek5000/NekRS runs on CPUs.
 
-Figure~\ref{fig:nekrs1}, bottom, shows strong scaling performance with $E = 277000$ and $N = 7$,
-total grid points of $n = 95,011,000$. NekRS GPU runs used 4M, 3M, 2.5M, 2.2M, 1.9M, 1.7M and 1.5M
-grid points per GPU as the number of nodes increase from 4 to 10, demonstrating 80\% efficiency 
-at 1.9M points per GPU.
+\medskip
+Figure~\ref{fig:nekrs2} shows strong scaling performance of Nek5000 and NekRS with $E = 277000$ 
+and $N = 7$, total grid points of $n = 95,011,000$. NekRS GPU runs used 
+4M, 3M, 2.5M, 2.2M, 1.9M, 1.7M and 1.5M grid points per GPU as the number of nodes increase 
+from 4 to 10, demonstrating 80\% efficiency at 1.9M points per GPU.
 
+\medskip
 We note that a full core calculation was also performed with 150 million elements and the average 
 time for time step was 0.7s.
 
@@ -180,6 +200,7 @@ The swept hexahedral volumes are partitioned in the radial direction to
 provide more resolution and the overall mesh is smoothed to yield a 
 well-conditioned mesh that minimizes excessive CFL constaints.
 
+\medskip
 Figures~\ref{f:ndemo3} and ~\ref{f:ndemo4} illustrate the type of
 domains that are accessible with this approach.  
   Table~\ref{tab:pebble} reports the number of pebbles and number
@@ -189,6 +210,7 @@ spectral elements of degree $N=7$ with a total of
 $n := EN^3$ = 2 billion grid points for Reynolds number $Re_D=5000$.
 
 \begin{figure}[!h]
+\vskip.2in
 \centering
 \includegraphics[clip=true,width=0.4\textwidth]{Figures/ndemo_r3}
 \caption{NekRS: a velocity component for turbulent flow simulations using the
@@ -228,6 +250,7 @@ spectral element mesh with 1,121,214 spectral elements for 3260 pebbles. }
   \label{tab:pebble}
  \end{table}
 
+\medskip
 We also examine strong-scaling performance of NekRS (GPU) and NekRS
 (CPU) in Table~\ref{tab:nekrs1}. We measured timings for 100 timesteps for
 turbulent flow simulations with the 1568-pebble mesh on ORNL's Summit, using 42
@@ -257,9 +280,9 @@ parallel efficiency at 2.1 million points per GPU.
   52 & 1680 & 0.5M & 0.255 & 0.51 & 240 & 82K & 1.204 & 1.02\\
   \hline \hline
 \end{tabular}}
- \caption{NekRS GPU/CPU Strong-Scale Timings (seconds per step) for 100 Steps
-of Turbulent flow Simulations with $Re=10000$ for 1568-Pebble Case Using Total
-Number of Grid Points $n=179,864,398$ ($E=524,386$ and $N=7$).}
+ \caption{NekRS GPU/CPU strong-scale timings (seconds per step) for 100 steps
+of turbulent flow simulations with $Re=10000$ for 1568-Pebble case using total
+number of grid points $n=179,864,398$ ($E=524,386$ and $N=7$).}
  \label{tab:nekrs1}
 \end{table}
 
@@ -270,6 +293,7 @@ new GPU spectral element solver NekRS, a port of Nek5000. The simulations
 clearly demonstrate the potential of Nek5000 to be applied to full core
 calculations.
 
+\medskip
 For example for pebble beds, twenty nodes represents less than 1\% of the
 computing power available on Summit, which is sufficient for 1568 pebbles at
 2.1 million points per GPU. Performance throughput for NekRS saturates at 2--4
