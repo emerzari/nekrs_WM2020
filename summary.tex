@@ -123,7 +123,7 @@ related to the flow in light-water small modular reactors and in pebble beds.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_weakscale.png}
+\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_weakscale_ideal.png}
 \caption{NekRS GPU/CPU and Nek5000 CPU weak-scaling performance on OLCF's Summit.
 The averaged walltime per timestep is measured using 101--200 time steps for
 a 17$\times$17 rod-bundle turbulent flow simulations with $Re=5000$.}
@@ -131,7 +131,7 @@ a 17$\times$17 rod-bundle turbulent flow simulations with $Re=5000$.}
 \end{figure}
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_strongscale.png}
+\includegraphics[width=0.45\textwidth]{./Figures/nek_rod1717_strongscale_ideal.png}
 \caption{NekRS GPU/CPU and Nek5000 CPU strong-scaling performance on OLCF's Summit.
 The averaged walltime per timestep is measured using 101--200 time steps for
 a 17$\times$17 rod-bundle turbulent flow simulations with $Re=5000$.}
@@ -170,9 +170,9 @@ projection techniques in~\cite{Fischer1998}.
 
 \medskip
 Figure~\ref{fig:nekrs2} shows strong scaling performance of Nek5000 and NekRS with $E = 277000$ 
-and $N = 7$, total grid points of $n = 95,011,000$. NekRS GPU runs used 
-4M, 3M, 2.5M, 2.2M, 1.9M, 1.7M and 1.5M grid points per GPU as the number of nodes increase 
-from 4 to 10, demonstrating 80\% efficiency at 1.9M points per GPU.
+and $N = 7$, total grid points of $n = 95,011,000$. NekRS GPU runs used 5.2M, 3.9M, 3.1M, 2.6M, 
+2.2M, 1.9M, 1.7M, 1.5M and 1.3M grid points per GPU as the number of nodes increase 
+from 3 to 12, demonstrating 80\% efficiency at 1.9M points per GPU.
 Here the pressure-Poisson solve for Nek5000 CPU runs was not performed with the temporal projection 
 techniques in~\cite{Fischer1998}.
 
