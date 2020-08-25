@@ -105,11 +105,11 @@ are performed with Hypre.
 \section{Selected results}
 
 The rapid convergence of the high-order discretizations in Nek5000 and NekRS
-and their high performance on the DOE's leadership computing facilities makes
+and their high performance on the DOE's leadership computing facilities make
 them ideally suited for LES/DNS in complex domains.  
 In~\cite{fischer15}, the strong scaling behavior of Nek5000 on ALCF's Mira, 
 where 60\% efficiency is realized at 1 million MPI ranks for just 2000 points 
-per rank, in keeping with theoretical estimates provided.  
+per rank, in keeping with theoretical estimates is provided.  
 Here, we present performance results on OLCF's Summit,
 related to the flow in light-water small modular reactors and in pebble beds.
 
@@ -162,7 +162,7 @@ as the number of nodes increases as 16, 48, 88, 176, 352, 440, 880, and 1760.
 The axial length was simply extended while keeping the mesh resolution the same. 
 A fixed number of 69250 spectral elements per node is used, which corresponds 
 to 3.9 million grid points per GPU and 0.5 million grid points per MPI rank for CPU-only runs.
-The averaged walltime per timestep takes 0.4--0.5 seconds for NekRS on GPUs,
+The averaged walltime per timestep takes 0.4--0.6 seconds for NekRS on GPUs,
 achieving $\sim$10$\times$ speedup compared to NekRS on CPUs and 
 $\sim$7$\times$ speedup compared to Nek5000 on CPUs. 
 We note that the pressure-Poisson solve for Nek5000 CPU runs was performed with the temporal 
