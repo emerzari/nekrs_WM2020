@@ -19,6 +19,7 @@ $^{\ddagger}$ Pennsylvania State University
 \usepackage{graphicx} % allows inclusion of graphics
 \usepackage{booktabs} % nice rules (thick lines) for tables
 \usepackage{microtype} % improves typography for PDF
+\usepackage{lineno,hyperref}
 
 \newcommand{\SN}{S$_N$}
 \renewcommand{\vec}[1]{\bm{#1}} %vector is bold italic
@@ -45,7 +46,9 @@ Even with Petascale computing, limitations in nuclear modeling and simulation to
 In order to exploit the power of Exascale and pre-Exascale architectures in the
 United States,  however, performant GPU implementations of computational fluid
 dynamics algorithms are needed. In this manuscript we summarize recent efforts
-to port the spectral element code Nek5000 \cite{fischer2015nek5000} to GPUs. In
+% Argonne disappoves to use the citation: fischer2015nek5000
+%to port the spectral element code Nek5000 \cite{fischer2015nek5000} to GPUs. In
+to port the spectral element code Nek5000 \cite{nek} to GPUs. In
 particular we discuss a novel version of the code, NekRS, and a series of large
 scale simulations performed on ORNL's Summit, the second largest supercomputer
 in the world. These simulations demonstrate the potential of NekRS to simulate
@@ -54,7 +57,8 @@ the code on Summit.
 
 \section{Nek5000 and NekRS}
 
-Nek5000 \cite{fischer2015nek5000} is an open-source simulation software package
+%Nek5000 \cite{fischer2015nek5000} is an open-source simulation software package
+Nek5000 \cite{nek} is an open-source simulation software package
 that delivers highly accurate solutions for a wide range of scientific
 applications, including fluid flow, thermal convection, combustion, and
 magnetohydrodynamics. It features state-of-the-art, scalable high-order
